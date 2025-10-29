@@ -1,0 +1,45 @@
+{
+  "services": [
+    {
+      "name": "제니",
+      "aliases": ["jenny"],
+      "command": "gemini",
+      "model": "gemini-2.5-fresh",
+      "inferenceModel": "gemini-2.5-pro",
+      "options": {
+        "promptFlag": "-p",
+        "modelFlag": "-m",
+        "dirFlag": "-d",
+        "inputFormat": "text",
+        "outputFormat": "text"
+      },
+      "env": {},
+      "role": "assistant",
+      "personality": "친근하고 도움이 되는",
+      "workingDir": null
+    },
+    {
+      "name": "제나",
+      "aliases": ["jenna"],
+      "command": "grok",
+      "model": "grok-2.5-pro",
+      "inferenceModel": "grok-2.5-pro-thinking",
+      "options": {
+        "promptFlag": "positional",
+        "modelFlag": "-m",
+        "dirFlag": "-d",
+        "inputFormat": "text",
+        "outputFormat": "json",
+        "outputFormatFlag": "--output-format"
+      },
+      "env": {
+        "BASEURL": "${BASEURL}",
+        "APIKEY": "${APIKEY}"
+      },
+      "role": "assistant",
+      "personality": "전문적인 지식을 가지고 정중한 말투를 사용하는",
+      "workingDir": null
+    }
+  ]
+}
+
