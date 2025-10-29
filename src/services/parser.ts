@@ -1,10 +1,13 @@
 import { Readable } from 'stream';
-// @ts-ignore - stream-json doesn't have types
-import StreamValues from 'stream-json/streamers/StreamValues.js';
-// @ts-ignore - stream-chain doesn't have types
-import { chain } from 'stream-chain';
-// @ts-ignore - stream-json doesn't have types
-import { parser as jsonParser } from 'stream-json';
+// @ts-ignore - stream-json doesn't have types (CommonJS)
+import streamJson from 'stream-json';
+const { parser: jsonParser } = streamJson;
+// @ts-ignore - stream-json doesn't have types (CommonJS)
+import StreamValuesModule from 'stream-json/streamers/StreamValues.js';
+const StreamValues = StreamValuesModule.default || StreamValuesModule;
+// @ts-ignore - stream-chain doesn't have types (CommonJS)
+import streamChain from 'stream-chain';
+const { chain } = streamChain;
 
 /**
  * Parse stream-json output into readable format

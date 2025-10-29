@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "collaboration-mcp": {
+      "command": "node",
+      "args": ["/Users/simonkim/_works/collaboration-mcp/dist/index.js"],
+      "env": {}
+    }
+  }
+}
+
