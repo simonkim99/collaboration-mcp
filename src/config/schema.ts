@@ -19,6 +19,8 @@ export interface ServiceOptions {
   outputFormatFlag?: string;
   /** Default flags to always include: e.g., ['-y'] (optional) */
   defaultFlags?: string[];
+  /** Use stdin for input instead of command line arguments (optional, default: false) */
+  useStdin?: boolean;
 }
 
 export interface ServiceConfig {

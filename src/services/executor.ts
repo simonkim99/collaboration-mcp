@@ -1,4 +1,4 @@
-import { exec, execFile } from 'child_process';
+import { exec, execFile, spawn } from 'child_process';
 import { promisify } from 'util';
 import type { ServiceConfig } from '../config/schema.js';
 
@@ -106,19 +106,79 @@ export async function executeService(
   const env = buildEnv(service);
 
   try {
-    // Use execFile for better argument handling (prevents shell injection)
-    // But fall back to exec if command contains shell features
-    const { stdout, stderr } = await execFileAsync(service.command, args, {
-      cwd: workingDir,
-      env,
-      maxBuffer: 10 * 1024 * 1024, // 10MB
-    });
+    // Check if stdin should be used based on configuration
+    const needsStdin = service.options.useStdin === true;
+    
+    if (needsStdin) {
+      // Use spawn for commands that need stdin input
+      return await new Promise<ExecutionResult>((resolve) => {
+        const child = spawn(service.command, args, {
+          cwd: workingDir,
+          env,
+          stdio: ['pipe', 'pipe', 'pipe'],
+        });
 
-    return {
-      stdout,
-      stderr,
-      exitCode: 0,
-    };
+        let stdout = '';
+        let stderr = '';
+        let exitCode = 0;
+
+        child.stdout.on('data', (data) => {
+          stdout += data.toString();
+        });
+
+        child.stderr.on('data', (data) => {
+          stderr += data.toString();
+        });
+
+        child.on('close', (code) => {
+          exitCode = code || 0;
+          resolve({ stdout, stderr, exitCode });
+        });
+
+        child.on('error', (error) => {
+          stderr += error.message;
+          exitCode = 1;
+          resolve({ stdout, stderr, exitCode });
+        });
+
+        // Send formatted prompt via stdin
+        // Note: prompt is already formatted with role/personality in chat.ts
+        // For grok CLI, we need to send the prompt and wait for response
+        child.stdin.write(prompt + '\n');
+        
+        // For interactive CLIs like grok, we may need to send exit command after response
+        // But let's wait for stdout first
+        
+        // Set timeout (30 seconds for AI responses)
+        const timeout = setTimeout(() => {
+          if (!child.killed) {
+            child.kill();
+            resolve({ stdout, stderr: stderr + '\nTimeout after 30 seconds', exitCode: 1 });
+          }
+        }, 30000);
+        
+        // Clear timeout when process closes
+        child.on('close', () => {
+          clearTimeout(timeout);
+        });
+        
+        // Close stdin after writing (some CLIs need this)
+        child.stdin.end();
+      });
+    } else {
+      // Use execFile for commands that don't need stdin
+      const { stdout, stderr } = await execFileAsync(service.command, args, {
+        cwd: workingDir,
+        env,
+        maxBuffer: 10 * 1024 * 1024, // 10MB
+      });
+
+      return {
+        stdout,
+        stderr,
+        exitCode: 0,
+      };
+    }
   } catch (error: any) {
     // execFileAsync throws on non-zero exit codes
     return {

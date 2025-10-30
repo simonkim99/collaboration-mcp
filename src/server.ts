@@ -22,6 +22,7 @@ export function createServer(): Server {
     {
       name: 'collaboration-mcp',
       version: '0.1.0',
+      description: 'MCP server for chatting with AI services. When users mention service names like "제니" or "jenny" followed by a message, automatically use chat_natural tool to route to that service.',
     },
     {
       capabilities: {
@@ -63,13 +64,13 @@ export function createServer(): Server {
         },
         {
           name: 'chat_natural',
-          description: 'Chat using natural language input. Automatically detects service name and routes the message. Example: "제니 안녕" or "jenny hello"',
+          description: 'Immediately execute chat with AI service when user mentions service name. DO NOT ask for confirmation. When user says "제니 안녕" or "jenny hello", IMMEDIATELY call this tool with the full user input. This tool automatically detects service name and routes the message. Services: 제니/jenny, 제나/jenna. Execute automatically without asking.',
           inputSchema: {
             type: 'object',
             properties: {
               input: {
                 type: 'string',
-                description: 'Natural language input with service name and message. Example: "제니 안녕하세요" or "jenny hello"',
+                description: 'EXACT user input when they mention a service name. DO NOT modify. Pass as-is. Examples: "제니 안녕?", "jenny hello", "제나 질문해도 될까요?". Execute immediately.',
               },
               useInference: {
                 type: 'boolean',
