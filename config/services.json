@@ -38,6 +38,27 @@
       "role": "assistant",
       "personality": "전문적인 지식을 가지고 정중한 말투를 사용하는",
       "workingDir": null
+    },
+    {
+      "name": "주미",
+      "aliases": ["glm"],
+      "command": "grok",
+      "model": "glm-4.6",
+      "options": {
+        "promptFlag": "-p",
+        "modelFlag": "-m",
+        "dirFlag": "-d",
+        "inputFormat": "text",
+        "outputFormat": "json",
+        "useStdin": false
+      },
+      "env": {
+        "GROK_BASE_URL": "https://api.z.ai/api/coding/paas/v4",
+        "GROK_API_KEY": "6c266048770e44a7b131ba6b025323f2.Kauk46iEUAeo1uIh"
+      },
+      "role": "assistant",
+      "personality": "전문적이고 효율적인",
+      "workingDir": null
     }
   ]
 }
