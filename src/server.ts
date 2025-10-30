@@ -4,6 +4,7 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { chatWithService } from './tools/chat.js';
+import { chatWithNaturalInput } from './tools/natural-chat.js';
 import {
   listServices,
   getServiceConfig,
@@ -58,6 +59,29 @@ export function createServer(): Server {
               },
             },
             required: ['service', 'prompt'],
+          },
+        },
+        {
+          name: 'chat_natural',
+          description: 'Chat using natural language input. Automatically detects service name and routes the message. Example: "제니 안녕" or "jenny hello"',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              input: {
+                type: 'string',
+                description: 'Natural language input with service name and message. Example: "제니 안녕하세요" or "jenny hello"',
+              },
+              useInference: {
+                type: 'boolean',
+                description: 'Use inference model instead of default model',
+                default: false,
+              },
+              model: {
+                type: 'string',
+                description: 'Override model (optional)',
+              },
+            },
+            required: ['input'],
           },
         },
         {
@@ -146,6 +170,15 @@ export function createServer(): Server {
             model?: string;
           };
           return await chatWithService(service, prompt, useInference, model);
+        }
+
+        case 'chat_natural': {
+          const { input, useInference, model } = args as {
+            input: string;
+            useInference?: boolean;
+            model?: string;
+          };
+          return await chatWithNaturalInput(input, useInference, model);
         }
 
         case 'list_services':

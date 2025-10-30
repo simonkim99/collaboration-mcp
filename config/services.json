@@ -4,14 +4,15 @@
       "name": "제니",
       "aliases": ["jenny"],
       "command": "gemini",
-      "model": "gemini-2.5-fresh",
+      "model": "gemini-2.5-flash",
       "inferenceModel": "gemini-2.5-pro",
       "options": {
-        "promptFlag": "-p",
+        "promptFlag": "positional",
         "modelFlag": "-m",
         "dirFlag": "-d",
         "inputFormat": "text",
-        "outputFormat": "text"
+        "outputFormat": "text",
+        "defaultFlags": ["-y"]
       },
       "env": {},
       "role": "assistant",

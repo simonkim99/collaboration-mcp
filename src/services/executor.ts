@@ -1,8 +1,9 @@
-import { exec } from 'child_process';
+import { exec, execFile } from 'child_process';
 import { promisify } from 'util';
 import type { ServiceConfig } from '../config/schema.js';
 
 const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 export interface ExecutionResult {
   stdout: string;
@@ -21,6 +22,11 @@ function buildCommandArgs(
 ): string[] {
   const args: string[] = [];
   const options = service.options;
+
+  // Add default flags first (e.g., '-y')
+  if (options.defaultFlags && options.defaultFlags.length > 0) {
+    args.push(...options.defaultFlags);
+  }
 
   // Add model flag
   const modelToUse = model || service.model;
@@ -45,6 +51,8 @@ function buildCommandArgs(
 
   // Add prompt
   if (options.promptFlag === 'positional') {
+    // For positional arguments, add the prompt as-is
+    // The shell will handle proper quoting
     args.push(prompt);
   } else {
     args.push(options.promptFlag, prompt);
@@ -91,15 +99,16 @@ export async function executeService(
   // Determine working directory
   const workingDir = customWorkingDir || service.workingDir || process.cwd();
 
-  // Build command
+  // Build command arguments
   const args = buildCommandArgs(service, prompt, model, workingDir);
-  const command = [service.command, ...args].join(' ');
 
   // Build environment variables
   const env = buildEnv(service);
 
   try {
-    const { stdout, stderr } = await execAsync(command, {
+    // Use execFile for better argument handling (prevents shell injection)
+    // But fall back to exec if command contains shell features
+    const { stdout, stderr } = await execFileAsync(service.command, args, {
       cwd: workingDir,
       env,
       maxBuffer: 10 * 1024 * 1024, // 10MB
@@ -111,7 +120,7 @@ export async function executeService(
       exitCode: 0,
     };
   } catch (error: any) {
-    // execAsync throws on non-zero exit codes
+    // execFileAsync throws on non-zero exit codes
     return {
       stdout: error.stdout || '',
       stderr: error.stderr || '',

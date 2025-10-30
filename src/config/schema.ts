@@ -17,6 +17,8 @@ export interface ServiceOptions {
   inputFormatFlag?: string;
   /** Output format flag: e.g., '--output-format' (optional) */
   outputFormatFlag?: string;
+  /** Default flags to always include: e.g., ['-y'] (optional) */
+  defaultFlags?: string[];
 }
 
 export interface ServiceConfig {
