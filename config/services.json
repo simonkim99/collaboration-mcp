@@ -2,7 +2,9 @@
   "services": [
     {
       "name": "제니",
-      "aliases": ["jenny"],
+      "aliases": [
+        "jenny"
+      ],
       "command": "gemini",
       "model": "gemini-2.5-flash",
       "inferenceModel": "gemini-2.5-pro",
@@ -12,7 +14,9 @@
         "dirFlag": "-d",
         "inputFormat": "text",
         "outputFormat": "text",
-        "defaultFlags": ["-y"]
+        "defaultFlags": [
+          "-y"
+        ]
       },
       "env": {},
       "role": "assistant",
@@ -21,7 +25,9 @@
     },
     {
       "name": "제나",
-      "aliases": ["jenna"],
+      "aliases": [
+        "jenna"
+      ],
       "command": "grok",
       "model": "grok-4-fast",
       "inferenceModel": "grok-4-fast-reasoning",
@@ -33,15 +39,16 @@
         "outputFormat": "text",
         "useStdin": false
       },
-      "env": {
-      },
+      "env": {},
       "role": "assistant",
       "personality": "전문적인 지식을 가지고 정중한 말투를 사용하는",
       "workingDir": null
     },
     {
       "name": "주미",
-      "aliases": ["glm"],
+      "aliases": [
+        "glm"
+      ],
       "command": "grok",
       "model": "glm-4.6",
       "options": {
@@ -59,7 +66,52 @@
       "role": "assistant",
       "personality": "전문적이고 효율적인",
       "workingDir": null
+    },
+    {
+      "name": "조이",
+      "aliases": [
+        "joy",
+        "codex"
+      ],
+      "command": "codex",
+      "model": "gpt-5-fast",
+      "inferenceModel": "gpt-5-pro-2025-10-06",
+      "options": {
+        "promptFlag": "positional",
+        "modelFlag": "-m",
+        "dirFlag": "-C",
+        "inputFormat": "text",
+        "outputFormat": "text",
+        "defaultFlags": [
+          "e"
+        ]
+      },
+      "role": "assistant",
+      "personality": "친근하고 유머러스한",
+      "workingDir": null
+    },
+    {
+      "name": "미라",
+      "aliases": [
+        "mira",
+        "claude"
+      ],
+      "command": "claude",
+      "model": "claude-sonnet-4-5",
+      "inferenceModel": "claude-opus-4-1",
+      "options": {
+        "promptFlag": "-p",
+        "modelFlag": "-m",
+        "dirFlag": "-d",
+        "inputFormat": "text",
+        "outputFormat": "text",
+        "defaultFlags": [
+          "-p"
+        ]
+      },
+      "role": "assistant",
+      "personality": "차분하고 신중한",
+      "workingDir": null
     }
   ]
 }
-
