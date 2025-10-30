@@ -5,13 +5,15 @@ import { startStdioTransport } from './transport/stdio.js';
 import { startHttpTransport } from './transport/http.js';
 
 const TRANSPORT = process.env.MCP_TRANSPORT || 'stdio';
-const HTTP_PORT = parseInt(process.env.MCP_HTTP_PORT || '3000', 10);
+const HTTP_PORT = parseInt(process.env.MCP_HTTP_PORT || '8091', 10);
 
 async function main() {
   const server = createServer();
 
   if (TRANSPORT === 'http') {
-    await startHttpTransport(server, HTTP_PORT);
+    const { getHandlers } = await import('./server.js');
+    const handlers = getHandlers(server);
+    await startHttpTransport(server, HTTP_PORT, handlers);
   } else {
     await startStdioTransport(server);
   }
